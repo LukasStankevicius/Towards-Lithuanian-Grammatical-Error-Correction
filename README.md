@@ -1,2 +1,1 @@
-# Towards-Lithuanian-Grammatical-Error-Correction
-Supplementary material for our conference paper
+This repository contains the [code](Supplementary_code.ipynb) used in our work **Towards Lithuanian Grammatical Error Correction**
