@@ -9,7 +9,6 @@ class Mistake:
         self.flags = (re.UNICODE | re.IGNORECASE) if flags is None else flags
 
     def corrupt_match(self, match): return match.group(0)
-
     def analyze(self, series): return series.str.count(self.pat, flags=re.UNICODE | re.IGNORECASE)
 
     def corrupt(self, series):
@@ -60,9 +59,9 @@ class Geminata(Mistake):
 
 def add_delete_spaces(series, frac):
     # deleting spaces
-    series = series.str.replace(r"\s", lambda x: x[0] if random() > frac else "")
+    series = series.str.replace(r"\s", lambda x: x[0] if random() > frac else "", regex=True)
     # inserting spaces
-    series = series.str.replace(r"\B", lambda x: x[0] if random() > frac else " ")
+    series = series.str.replace(r"\B", lambda x: x[0] if random() > frac else " ", regex=True)
     return series
 
 
