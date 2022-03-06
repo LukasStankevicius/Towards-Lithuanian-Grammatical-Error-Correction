@@ -4,7 +4,7 @@ from tqdm.auto import tqdm
 
 
 class Mistake:
-    def __init__(self, pat, frac=0.5, flags=None):
+    def __init__(self, pat, frac, flags=None):
         self.pat, self.frac = pat, frac
         self.flags = (re.UNICODE | re.IGNORECASE) if flags is None else flags
 
@@ -18,7 +18,7 @@ class Mistake:
 
 
 class Suduslejimas(Mistake):
-    def __init__(self, frac=0.1):
+    def __init__(self, frac):
         super().__init__(pat=r"(?<=\w)[bdgzž][ptksš]", frac=frac)
         suduslejimas_dict = {"b": "p", 'd': "t", "g": "k", "z": "s", "ž": "š"}
         self.suduslejimas_dict = {**suduslejimas_dict, **{k.upper(): v.upper() for k, v in suduslejimas_dict.items()}}
@@ -28,7 +28,7 @@ class Suduslejimas(Mistake):
 
 
 class Suskardejimas(Mistake):
-    def __init__(self, frac=0.05):
+    def __init__(self, frac):
         super().__init__(pat=r"(?<=\w)[ptksš][bdgzž]", frac=frac)
         suskard_dict = {"p": "b", "t": 'd', "k": "g", "s": "z", "š": "ž"}
         self.suskard_dict = {**suskard_dict, **{k.upper(): v.upper() for k, v in suskard_dict.items()}}
@@ -39,7 +39,7 @@ class Suskardejimas(Mistake):
 
 class Geminata2(Mistake):
     # two similar consonants
-    def __init__(self, frac=0.05):
+    def __init__(self, frac):
         super().__init__(pat=r"([cčsšzž])(?!\1)[cčsšzž]", frac=frac)
 
     def corrupt_match(self, match):
@@ -48,7 +48,7 @@ class Geminata2(Mistake):
 
 class Geminata(Mistake):
     # two same consonants
-    def __init__(self, frac=0.05):
+    def __init__(self, frac):
         super().__init__(pat=r'(([bcčdfghjklmnprsštvzž])\s*\2)+', frac=frac)
 
     def corrupt_match(self, match):
@@ -58,7 +58,7 @@ class Geminata(Mistake):
             return match.group(0)[:-1]
 
 
-def add_delete_spaces(series, frac=0.01):
+def add_delete_spaces(series, frac):
     # deleting spaces
     series = series.str.replace(r"\s", lambda x: x[0] if random() > frac else "")
     # inserting spaces
@@ -100,7 +100,7 @@ def ff(original_, values_, weights_):
     return output
 
 
-def generate_mistakes(series, frac=0.1):
+def generate_mistakes(series, frac):
     for i in tqdm([Suduslejimas(frac=frac), Suskardejimas(frac=frac), Geminata2(frac=frac), Geminata(frac=frac)]):
         series = i.corrupt(series)
     series = swapcase(series, frac=frac)
