@@ -27,6 +27,7 @@ def load(lang, nlp=None):
     merger = import_module("errant.%s.merger" % lang)
 
     folder = Path(__file__).parent / "lt" / 'resources' / 'hunspell'
+    folder.mkdir(parents=True, exist_ok=True)
     if not (folder / 'lt_LT_DML6.aff').exists():
         # dowload hunspell files
         url = 'https://clarin.vdu.lt/xmlui/bitstream/handle/20.500.11821/36/DML6_vs_JCL.zip?sequence=3&isAllowed=y'
